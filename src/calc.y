@@ -3,8 +3,10 @@
 }
 
 %{
-
     #include <cstdio>
+    #include "asm.h"
+    #include <fstream>
+    #include <iostream>
     using namespace std;
     int yylex();
     extern int yylineno;
@@ -13,6 +15,17 @@
     }
 
     #define YYERROR_VERBOSE 1
+
+    Asm assemblyFile;
+
+    void writeFile(string name){
+        ofstream file;
+        file.open(name);
+        file << assemblyFile.data << endl
+        << assemblyFile.global <<endl
+        << assemblyFile.text << endl;
+        file.close();
+    }
 %}
 
 %union{
@@ -31,18 +44,32 @@
 %token<string_t> ID STRING
 %type<expr_t> exp factor term additive_expr relational_expr
 %type<expr_list_t> expression_list
-%type<statement_list_t> statements
+%type<statement_list_t> statements calc_list
 %type<statement_t> statement
 %type<string_list_t> ids
 
 %%
 
-calc_list: /* nada */
-         | calc_list statement EOL
-         | calc_list LET FLOAT_TYPE ID '(' ids  ')' '=' statements EOL
-         | calc_list LET FLOAT_TYPE ID '(' ')' '=' statements EOL
-         | calc_list LET ID '(' ids  ')' '=' statements EOL
-         | calc_list LET ID '(' ')' '=' statements EOL
+start: calc_list{
+    assemblyFile.global = ".globl main";
+    assemblyFile.data = ".data\n";
+    assemblyFile.text = ".text\n";
+    string code;
+    list<Statement *>::iterator it = $1->begin();
+    while(it != $1->end()){
+        code += (*it)->genCode();
+        it++;
+    }
+    assemblyFile.text += code;
+    writeFile("result.s");
+}
+
+calc_list: /* nada */ {$$ = new StatementList;}
+         | calc_list statement EOL  {$$ = $1; $$->push_back($2);}
+         | calc_list LET FLOAT_TYPE ID '(' ids  ')' '=' statements EOL {$$ = $1;  $$->push_back(new MethodDefinitionStatement($4, *$9, *$6, false));}
+         | calc_list LET FLOAT_TYPE ID '(' ')' '=' statements EOL {$$ = $1;  $$->push_back(new MethodDefinitionStatement($4, *$8, *(new list<string>), false));}
+         | calc_list LET ID '(' ids  ')' '=' statements EOL {$$ = $1;  $$->push_back(new MethodDefinitionStatement($3, *$8, *$5, true));}
+         | calc_list LET ID '(' ')' '=' statements EOL {$$ = $1;  $$->push_back(new MethodDefinitionStatement($3, *$7, *(new list<string>), true));}
          ;
 
 ids: ids ',' ID {$$ = $1; $$->push_back($3);}

@@ -2,9 +2,6 @@
 #include <map>
 #include <iostream>
 
-map<string, float> variables = {}; 
-map<string, MethodDefinition *> methods = {}; 
-
 void FloatExpr::genCode(Code &code){
 }
 
@@ -18,11 +15,11 @@ void IdExpr::genCode(Code &code){
 }
 
 string ExprStatement::genCode(){
-
+    return "Expr statement code generation\n";
 }
 
 string IfStatement::genCode(){
-  
+    return "If statement code generation\n";
 }
 
 void MethodInvocationExpr::genCode(Code &code){
@@ -30,6 +27,7 @@ void MethodInvocationExpr::genCode(Code &code){
 }
 
 string AssignationStatement::genCode(){
+    return "Assignation statement code generation\n";
 }
 
 void GteExpr::genCode(Code &code){
@@ -46,9 +44,13 @@ void ReadFloatExpr::genCode(Code &code){
 }
 
 string PrintStatement::genCode(){
-
+    return "Print statement code generation\n";
 }
 
 string ReturnStatement::genCode(){
+    return "Return statement code generation\n";
+}
 
+string MethodDefinitionStatement::genCode(){
+    return "Method definition code generation\n";
 }

@@ -12,7 +12,8 @@ enum StatementKind{
     EXPRESSION_STATEMENT,
     ASSIGNATION_STATEMENT,
     PRINT_STATEMENT,
-    RETURN_STATEMENT
+    RETURN_STATEMENT,
+    METHOD_DEFINITION_STATEMENT
 };
 
 class Expr{
@@ -144,16 +145,20 @@ class ExprStatement : public Statement{
         StatementKind getKind(){return EXPRESSION_STATEMENT;}
 };
 
-class MethodDefinition{
+class MethodDefinitionStatement : public Statement{
     public:
-        MethodDefinition(string id, StatementList stmts, list<string> params){
+        MethodDefinitionStatement(string id, StatementList stmts, list<string> params, bool isVoid){
             this->id = id;
             this->stmts = stmts;
             this->params = params;
+            this->isVoid = isVoid;
         }
         string id;
         StatementList stmts;
         list<string> params;
+        bool isVoid;
+        string genCode();
+        StatementKind getKind(){return METHOD_DEFINITION_STATEMENT;}
 };
 
 class AssignationStatement: public Statement{
