@@ -12,8 +12,6 @@
 "/" { return DIV; }
 "(" { return '('; }
 ")" { return ')'; }
-"[" { return '['; }
-"]" { return ']'; }
 "," { return ','; }
 ";" { return ';'; }
 ">" { return '>'; }

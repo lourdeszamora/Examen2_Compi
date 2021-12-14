@@ -81,7 +81,6 @@ statement: IF exp THEN statements ENDIF  {$$ = new IfStatement($2, *$4, *(new St
         |  PRINT '(' STRING ',' expression_list ')' {$$ = new PrintStatement($3, *$5);}
         |  exp { $$ = new ExprStatement($1);}
         |  ID '=' exp {$$ = new AssignationStatement($1, $3, *(new ExprList));}
-        |  ID '=' '[' expression_list ']' {$$ = new AssignationStatement($1, NULL, *$4);}
         |  RETURN exp  {$$ = new ReturnStatement($2);}
         ;
 
