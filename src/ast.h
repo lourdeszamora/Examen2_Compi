@@ -2,6 +2,7 @@
 #define _AST_H_
 
 #include <list>
+#include <map>
 #include <string>
 #include "code.h"
 
